@@ -15,7 +15,9 @@ RUN cd nginx-1.11.2 && \
 
 RUN ln -s /opt/nginx/sbin/nginx /usr/sbin/nginx && \
     ln -s /opt/nginx/logs /var/log/nginx && \
-    mkdir -p /usr/share/nginx/html
+    mkdir -p /usr/share/nginx/html && \
+    mkdir -p /etc/nginx && \
+    cp -r /opt/nginx/conf/* /etc/nginx/
 
 ADD root /
 
