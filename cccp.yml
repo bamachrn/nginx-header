@@ -1,5 +1,5 @@
 #place this file in your nulecule dir and call it cccp.yml
-job-id: openshift-nginx
+job-id: nginx-header
 
 #the following are optional, can be left blank
 #defaults, where applicable are filled in
