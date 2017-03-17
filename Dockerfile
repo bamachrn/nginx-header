@@ -1,6 +1,6 @@
 FROM registry.centos.org/centos/centos:latest
 MAINTAINER Bama Charan Kundu <bkundu@redhat.com>
-RUN yum install make gcc zlib* pcre* -y && \
+RUN yum install make gcc zlib* pcre* openssl-devel -y && \
     yum clean all
 RUN curl -L -o nginx-1.11.2.tar.gz http://nginx.org/download/nginx-1.11.2.tar.gz && \
     tar -xzvf nginx-1.11.2.tar.gz
@@ -9,7 +9,13 @@ RUN cd / && \
     curl -L -o headers-more-nginx-module-0.32.tar.gz https://github.com/openresty/headers-more-nginx-module/archive/v0.32.tar.gz && \
     tar -xvf headers-more-nginx-module-0.32.tar.gz
 RUN cd nginx-1.11.2 && \
-    ./configure --prefix=/opt/nginx --add-module=/headers-more-nginx-module-0.32 && \
+    ./configure --prefix=/opt/nginx \
+                --add-module=/headers-more-nginx-module-0.32 \
+                --with-http_ssl_module \
+                --with-http_sub_module \
+                --with-http_gzip_static_module \
+                --with-http_secure_link_module \
+                --with-http_addition_module && \
     make && \
     make install
 
