@@ -1,5 +1,5 @@
---- nginx.spec  2017-03-20 08:58:42.061673859 +0000
-+++ nginx.spec.centos7.patch 2017-03-20 08:52:33.149164501 +0000
+--- nginx.spec.orig     2017-01-31 15:37:16.000000000 +0000
++++ nginx.spec  2017-03-20 10:20:57.500197865 +0000
 @@ -78,6 +78,7 @@
  Source11: nginx-debug.service
  Source12: COPYRIGHT
@@ -13,22 +13,23 @@
  %prep
  %setup -q
 +%setup -b 14 -q
-
  cp %{SOURCE2} .
  sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
-@@ -108,6 +110,7 @@
+     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
+@@ -107,13 +109,15 @@
  ./configure %{BASE_CONFIGURE_ARGS} \
      --with-cc-opt="%{WITH_CC_OPT}" \
      --with-ld-opt="%{WITH_LD_OPT}" \
 +    --add-module=../headers-more-nginx-module-0.32 \
      --with-debug
  make %{?_smp_mflags}
-
-@@ -116,6 +119,7 @@
+ %{__mv} %{bdir}/objs/nginx \
+     %{bdir}/objs/nginx-debug
  ./configure %{BASE_CONFIGURE_ARGS} \
      --with-cc-opt="%{WITH_CC_OPT}" \
-     --with-ld-opt="%{WITH_LD_OPT}" \
+-    --with-ld-opt="%{WITH_LD_OPT}"
++    --with-ld-opt="%{WITH_LD_OPT}" \
 +    --add-module=../headers-more-nginx-module-0.32
-
  make %{?_smp_mflags}
+
  %install

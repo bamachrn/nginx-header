@@ -8,16 +8,20 @@ WORKDIR /home/builder
 
 ADD nginx.spec.centos7.patch /home/builder
 
+USER builder
+
 RUN cd /home/builder && \
     curl -LO http://nginx.org/packages/centos/7/SRPMS/nginx-1.10.3-1.el7.ngx.src.rpm && \
-    rpm -Uvh nginx-1.10.3-1.el7.ngx.src.rpm
-
-RUN cd /home/builder/rpmbuild/SOURCES/ && \
+    rpm -Uvh nginx-1.10.3-1.el7.ngx.src.rpm && \
+    ls /home/builder/ -la && \
+    cd /home/builder/rpmbuild/SOURCES/ && \
     curl -L -o headers-more-nginx-module-0.32.tar.gz https://github.com/openresty/headers-more-nginx-module/archive/v0.32.tar.gz
 
 RUN cd /home/builder/rpmbuild/SPECS && \
-    patch -p0 /home/builder/nginx.spec.centos7.patch
+    patch nginx.spec /home/builder/nginx.spec.centos7.patch && \
     rpmbuild -ba nginx.spec
+
+USER root
 
 RUN yum install -y /home/builder/rpmbuild/RPMS/x86_64/nginx-1.10.3-1.el7.centos.ngx.x86_64.rpm && \
     mkdir -p /usr/share/nginx/html
@@ -30,5 +34,4 @@ RUN echo "nginx on CentOS7" > /usr/share/nginx/html/index.html
 RUN chmod 777 /run /var/log/nginx
 
 EXPOSE 8080
-
 ENTRYPOINT ["/run.sh"]
